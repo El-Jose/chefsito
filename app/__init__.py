@@ -1,11 +1,14 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
+from flask import Flask
+
+from app.login.models import db
+from app.login.views import login
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
-db = SQLAlchemy(app)
 
-from app.login.views import login
-app.register_blueprint(login)
-db.create_all()
+with app.app_context():
+    app.register_blueprint(login)
+    db.init_app(app)
+    db.app = app
+    db.create_all()
