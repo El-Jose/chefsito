@@ -7,19 +7,6 @@ from app.login.models import User, Users, db
 login = Blueprint('login', __name__)
 
 
-@login.route('/users')
-def login_post():
-    users = str(Users.query.all())
-    user_list = users.strip('[]').split(', ') 
-    user_dct = []
-    for user in user_list:
-        if user.startswith('User '):
-            username = user.split(' ')[1].lower()
-            dct = {'User': username}
-            user_dct.append(dct)
-    return jsonify(user_dct)
-
-
 @login.route('/login', methods=['POST'])
 def login_view():
     if request.method == 'POST':
