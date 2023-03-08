@@ -1,6 +1,6 @@
 
-from flask import Flask, request, jsonify, Blueprint, abort
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, Flask, abort, current_app, jsonify, request
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.login.models import User, Users, db
 

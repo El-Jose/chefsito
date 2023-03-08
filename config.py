@@ -1,3 +1,4 @@
+
 class Config(object):
     DEBUG = True
     DEVELOPMENT = True
