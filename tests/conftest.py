@@ -16,8 +16,8 @@ def init_database(test_client):
     db.create_all()
 
     # Insert user data
-    user1 = User(email='userone@gmail.com', password_plaintext='contraseñauwu')
-    user2 = User(email='usertwo@gmail.com', password_plaintext='uwucontraseña')
+    user1 = User(email='userone@gmail.com', password='contraseñauwu')
+    user2 = User(email='usertwo@gmail.com', password='uwucontraseña')
     db.session.add(user1)
     db.session.add(user2)
 
