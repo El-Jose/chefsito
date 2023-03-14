@@ -11,7 +11,7 @@ def test_client():
 
 
 @pytest.fixture(scope='module')
-def init_database(tclient):
+def init_database(test_client):
     # Create the database and the database table
     db.create_all()
 
