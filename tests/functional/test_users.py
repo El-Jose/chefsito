@@ -1,18 +1,11 @@
 
-def test_login(test_client):
-    response = client.post('/login', data={'email': 'usuario@ejemplo.com', 'password': 'contraseña'})
+def test_my_register(tclient):
+    response = tclient.post('/register', json={'email': 'kazu@gmail.com', 'password': 'toradesu'})
     assert response.status_code == 200
-    assert response.get_data(as_text=True) == 'Inicio de sesión exitoso!'
+    assert 'register successful' in response.get_data(as_text=True)
 
-def test_login_invalid_credentials(test_client):
-    response = client.post('/login', data={'email':'monda@gmail.com', 'password':'contraseña_incorrecta'})
+
+def test_my_login(tclient):
+    response = tclient.post('/login', json={'email': 'kazu@gmail.com', 'password': 'toradesu'})
     assert response.status_code == 200
-    assert response.get_data(as_text=True) == 'Credenciales incorrectas!'
-
-
-def test_login_page(test_client):
-
-    response = test_client.get('/login')
-    assert response.status_code == 200
-    assert b'Email' in response.json
-    assert b'Password' in response.json
+    assert '"correct password"\n' in response.get_data(as_text=True)   

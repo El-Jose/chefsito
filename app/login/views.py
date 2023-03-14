@@ -13,8 +13,9 @@ def login_view():
         email = request.json['email']
         password = request.json['password']
         user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password_hash, password):
-            return jsonify('contraseña correcta')
+        hash_password = user.password
+        if user and check_password_hash(hash_password, password):
+            return jsonify('correct password')
         else:
             return abort(501, description="error trying to login")
     return jsonify('login successful!')
