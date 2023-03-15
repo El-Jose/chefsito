@@ -1,4 +1,5 @@
 
+
 def test_register(test_client):
     """
     GIVEN a Flask application configured for testing
@@ -33,3 +34,41 @@ def test_invalid_login(test_client, init_database):
                                 follow_redirects=True)
     assert response.status_code == 501
     assert b"error trying to login" in response.data
+
+
+def test_valid_registration(test_client, init_database):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/register' page is posted to (POST)
+    THEN check the response is valid and the user is logged in
+    """
+    response = test_client.post('/register',
+                                json={'email': 'userone@gmail.com',
+                                "password": 'contraseñauwu'},
+                                follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{\n  "message": "Email already exists"\n}\n' in response.data
+    assert b'"register successful"\n' in response.data
+    assert b'Login' not in response.data
+    assert b'Register' not in response.data
+
+
+def test_duplicate_registration(test_client, init_database):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/register' page is posted to (POST) using an email address already registered
+    THEN check an error message is returned to the user
+    """
+    # Register the new account
+    test_client.post('/register',
+                        json={"email":'usertree@gmail.com',
+                            "password":'onepbest'},
+                        follow_redirects=True)
+    # Try registering with the same email address
+    response = test_client.post('/register',
+                                    json={"email":'usertree@gmail.com',
+                                    "password":'onepbest'},
+                                    follow_redirects=True)
+    assert b'{\n  "message": "Email already exists"\n}\n' in response.data
+    assert response.status_code == 200
+    assert b'"register successful"\n' in response.data

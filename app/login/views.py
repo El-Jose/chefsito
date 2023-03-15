@@ -27,6 +27,8 @@ def register_view():
         try:
             email = request.json['email']
             password = request.json['password']
+            if User.query.filter_by(email=email).first():
+                return jsonify({'message': 'Email already exists'})
             user = User(email=email, password=generate_password_hash(password))
             db.session.add(user)
             db.session.commit()
