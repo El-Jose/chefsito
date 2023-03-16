@@ -1,4 +1,6 @@
 
+import random
+
 from flask import Blueprint, Flask, abort, current_app, jsonify, request
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -24,14 +26,27 @@ def login_view():
 @login.route('/register', methods=['POST'])
 def register_view():
     if request.method == 'POST':
+        email = request.json['email']
+        password = request.json['password']
+        if User.query.filter_by(email=email).first():
+            return abort(409, description="error to register")
         try:
-            email = request.json['email']
-            password = request.json['password']
-            if User.query.filter_by(email=email).first():
-                return jsonify({'message': 'Email already exists'})
             user = User(email=email, password=generate_password_hash(password))
             db.session.add(user)
             db.session.commit()
         except Exception as e:
             return abort(501, description=f"error trying to register: {e}")
         return jsonify('register successful')
+
+
+@login.route('/recovery', methods=['POST'])
+def pass_recovery():
+    if request.method == 'POST':
+        email = request.json['email']
+        user = User.query.filter_by(email=email).first()
+        if user:
+            codigo = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+            user.codigo_temporal = codigo
+            db.session.commit()
+            return jsonify({'codigo': codigo})
+    return jsonify({'mensaje': 'Correo electrónico no encontrado'})
