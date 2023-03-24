@@ -15,7 +15,7 @@ class User(db.Model):
     def __init__(self, email, password):
         self.email = email
         self.password = password
-
+        #self.temp_num = temp_num
 
     def __repr__(self):
         return f"User {self.email}"

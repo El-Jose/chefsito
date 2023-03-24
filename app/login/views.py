@@ -52,31 +52,32 @@ def password_recovery():
             user.temp_num = codigo
             db.session.add(user)
             db.session.commit()# aca no hace el commit a la bd
-            return jsonify({'codigo': codigo})
-    return jsonify({'mensaje': 'Correo electrónico no encontrado'})
+            return jsonify({'codigo': codigo}), 200
+    return jsonify('Correo electronico no encontrado'), 400
 # ______________________________________________________________________________
 
 
 @login.route('/reset', methods=['POST'])
-def passord_reset():
-    import pdb; pdb.set_trace()
+def password_reset():
+
+
     if request.method == 'POST':
         data = request.json
         email = data.get('email')
         codigo = int(data.get('codigo'))
         user = User.query.filter_by(email=email).first()
         if user and user.temp_num == codigo:
-            pswrd = data.get('password')
+            password = data.get('password')
             confirm_password = data.get('confirm')
-            if pswrd == confirm_password:
-                # Actualizar la contraseña del usuario
-                pswrd1 = generate_password_hash(pswrd)
-                user.password = pswrd1
+            if password == confirm_password:
+                hashed_pass = generate_password_hash(password)
+                user.password = hashed_pass
                 user.temp_num = None
+                #porque se hace commit y no add
                 db.session.commit()
-                return jsonify({'La contraseña se ha actualizado correctamente':'success'})
+                return jsonify('La contraseña se ha actualizado correctamente'), 200
             else:
-                return jsonify({'message': 'Las contraseñas no coinciden'}), 400
+                return jsonify('Las contraseñas no coinciden'), 400
         else:
-            return jsonify({'message': 'El correo electrónico o el código son incorrectos'}), 400
+            return jsonify('El correo electrónico o el código son incorrectos'), 400
 # ______________________________________________________________________________
